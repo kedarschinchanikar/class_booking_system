@@ -1,0 +1,386 @@
+{
+  "info": {
+    "name": "Booking System API",
+    "description": "Global Class Offering Booking System - Complete API Collection\n\nThis collection covers all Teacher and Parent APIs with timezone handling and conflict detection.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Teacher APIs",
+      "description": "APIs for teachers to manage offerings and sessions",
+      "item": [
+        {
+          "name": "1. Create Offering",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n \"courseId\": 1,\n \"teacherId\": 1,\n \"name\": \"Saturday Batch\",\n \"maxCapacity\": 20\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teacher/offerings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "teacher", "offerings"]
+            },
+            "description": "Creates a new offering (section) for a course. Teacher specifies the course, name, and max capacity."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Add Session 1 (June 7)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n \"offeringId\": 1,\n \"startTime\": \"2025-06-07T17:00:00\",\n \"endTime\": \"2025-06-07T18:00:00\",\n \"timezone\": \"America/New_York\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teacher/sessions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "teacher", "sessions"]
+            },
+            "description": "Adds a session to offering 1. Time is in teacher's timezone (America/New_York) and will be stored as UTC."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Add Session 2 (June 14)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n \"offeringId\": 1,\n \"startTime\": \"2025-06-14T17:00:00\",\n \"endTime\": \"2025-06-14T18:00:00\",\n \"timezone\": \"America/New_York\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teacher/sessions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "teacher", "sessions"]
+            },
+            "description": "Adds second session to offering 1."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Add Session 3 (June 21)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n \"offeringId\": 1,\n \"startTime\": \"2025-06-21T17:00:00\",\n \"endTime\": \"2025-06-21T18:00:00\",\n \"timezone\": \"America/New_York\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teacher/sessions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "teacher", "sessions"]
+            },
+            "description": "Adds third session to offering 1."
+          },
+          "response": []
+        },
+        {
+          "name": "3. Get Teacher Offerings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/teacher/1/offerings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "teacher", "1", "offerings"]
+            },
+            "description": "Retrieves all offerings for teacher ID 1, with sessions displayed in the teacher's timezone (America/New_York)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Parent APIs",
+      "description": "APIs for parents to browse offerings, book, and view bookings",
+      "item": [
+        {
+          "name": "4. Get Available Offerings (LA timezone)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/parent/offerings?timezone=America/Los_Angeles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "parent", "offerings"],
+              "query": [
+                {
+                  "key": "timezone",
+                  "value": "America/Los_Angeles",
+                  "description": "Parent's timezone - sessions will be displayed in this timezone"
+                }
+              ]
+            },
+            "description": "Lists all available offerings with remaining capacity. Session times are converted to the parent's timezone (America/Los_Angeles)."
+          },
+          "response": []
+        },
+        {
+          "name": "4. Get Available Offerings (India timezone)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/parent/offerings?timezone=Asia/Kolkata",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "parent", "offerings"],
+              "query": [
+                {
+                  "key": "timezone",
+                  "value": "Asia/Kolkata",
+                  "description": "Same offerings but times shown in IST"
+                }
+              ]
+            },
+            "description": "Same offerings but session times displayed in Asia/Kolkata timezone. Demonstrates timezone conversion."
+          },
+          "response": []
+        },
+        {
+          "name": "5. Book Offering (Success)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n \"parentId\": 1,\n \"offeringId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/parent/bookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "parent", "bookings"]
+            },
+            "description": "Books offering 1 for parent 1. This books ALL sessions of the offering. Should return 201 Created."
+          },
+          "response": []
+        },
+        {
+          "name": "6. Get Parent Bookings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/parent/1/bookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "parent", "1", "bookings"]
+            },
+            "description": "Retrieves all bookings for parent 1. Session times are displayed in the parent's timezone (America/Los_Angeles)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Conflict Detection Tests",
+      "description": "Tests that demonstrate time-conflict and duplicate booking prevention",
+      "item": [
+        {
+          "name": "Create Conflicting Offering",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n \"courseId\": 2,\n \"teacherId\": 2,\n \"name\": \"Art Weekend\",\n \"maxCapacity\": 15\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teacher/offerings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "teacher", "offerings"]
+            },
+            "description": "Creates a second offering that will have an overlapping session time."
+          },
+          "response": []
+        },
+        {
+          "name": "Add Overlapping Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n \"offeringId\": 2,\n \"startTime\": \"2025-06-14T17:30:00\",\n \"endTime\": \"2025-06-14T18:30:00\",\n \"timezone\": \"America/New_York\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teacher/sessions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "teacher", "sessions"]
+            },
+            "description": "Adds a session to offering 2 that overlaps with offering 1's June 14 session (17:00-18:00 overlaps with 17:30-18:30)."
+          },
+          "response": []
+        },
+        {
+          "name": "Book Conflicting Offering (EXPECT 409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n \"parentId\": 1,\n \"offeringId\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/parent/bookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "parent", "bookings"]
+            },
+            "description": "EXPECTED: 409 Conflict. Parent 1 already booked offering 1 which has a session on June 14 (17:00-18:00). Offering 2 has a session on June 14 (17:30-18:30) which overlaps."
+          },
+          "response": []
+        },
+        {
+          "name": "Duplicate Booking (EXPECT 409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n \"parentId\": 1,\n \"offeringId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/parent/bookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "parent", "bookings"]
+            },
+            "description": "EXPECTED: 409 Conflict. Parent 1 has already booked offering 1. Duplicate bookings are prevented."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Validation Tests",
+      "description": "Tests that demonstrate input validation and error handling",
+      "item": [
+        {
+          "name": "Create Offering - Missing Fields (EXPECT 400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n \"name\": \"Saturday Batch\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teacher/offerings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "teacher", "offerings"]
+            },
+            "description": "EXPECTED: 400 Bad Request with validation errors for missing courseId and teacherId."
+          },
+          "response": []
+        },
+        {
+          "name": "Add Session - Invalid Time (EXPECT 400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n \"offeringId\": 1,\n \"startTime\": \"2025-06-07T18:00:00\",\n \"endTime\": \"2025-06-07T17:00:00\",\n \"timezone\": \"America/New_York\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teacher/sessions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "teacher", "sessions"]
+            },
+            "description": "EXPECTED: 400 Bad Request. End time is before start time."
+          },
+          "response": []
+        },
+        {
+          "name": "Book Non-existent Offering (EXPECT 404)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n \"parentId\": 1,\n \"offeringId\": 999\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/parent/bookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "parent", "bookings"]
+            },
+            "description": "EXPECTED: 404 Not Found. Offering ID 999 does not exist."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
